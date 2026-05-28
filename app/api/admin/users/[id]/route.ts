@@ -5,7 +5,7 @@ import { db } from "@/lib/db"
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -14,8 +14,10 @@ export async function PATCH(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
 
+    const { id } = await params
+
     // Prevent admin from deactivating themselves
-    if (params.id === session.user.id) {
+    if (id === session.user.id) {
       return NextResponse.json(
         { message: "You cannot deactivate your own account" },
         { status: 400 }
@@ -24,7 +26,7 @@ export async function PATCH(
 
     // Downgrade the user's role to USER as a soft deactivation
     await db.user.update({
-      where: { id: params.id },
+      where: { id },
       data: { role: "USER" },
     })
 

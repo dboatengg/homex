@@ -1,6 +1,7 @@
 import { db } from "@/lib/db"
 import { ListingCard } from "./listing-card"
 import { ListingsFilter } from "./listings-filter"
+import { Prisma } from "@prisma/client"
 
 interface SearchParams {
   type?: string
@@ -14,26 +15,29 @@ interface SearchParams {
 export default async function ListingsPage({
   searchParams,
 }: {
-  searchParams: SearchParams
+  searchParams: Promise<SearchParams>
 }) {
+  // Await searchParams — required in Next.js 16
+  const filters = await searchParams
+
   // Build dynamic where clause based on active filters
-  const where: any = {
-    status: "ACTIVE",
-    ...(searchParams.type && { type: searchParams.type }),
-    ...(searchParams.category && { category: searchParams.category }),
-    ...(searchParams.city && {
-      city: { contains: searchParams.city, mode: "insensitive" },
-    }),
-    ...(searchParams.bedrooms && {
-      bedrooms: { gte: parseInt(searchParams.bedrooms) },
-    }),
-    ...((searchParams.minPrice || searchParams.maxPrice) && {
-      price: {
-        ...(searchParams.minPrice && { gte: parseFloat(searchParams.minPrice) }),
-        ...(searchParams.maxPrice && { lte: parseFloat(searchParams.maxPrice) }),
-      },
-    }),
-  }
+  const where = {
+  status: "ACTIVE" as const,
+  ...(filters.type && { type: filters.type as "RENT" | "SALE" }),
+  ...(filters.category && { category: filters.category as "HOUSE" | "APARTMENT" | "SELF_CONTAINED" | "COMPOUND_HOUSE" | "LAND" | "TOWNHOUSE" }),
+  ...(filters.city && {
+    city: { contains: filters.city, mode: "insensitive" as const },
+  }),
+  ...(filters.bedrooms && {
+    bedrooms: { gte: parseInt(filters.bedrooms) },
+  }),
+  ...((filters.minPrice || filters.maxPrice) && {
+    price: {
+      ...(filters.minPrice && { gte: parseFloat(filters.minPrice) }),
+      ...(filters.maxPrice && { lte: parseFloat(filters.maxPrice) }),
+    },
+  }),
+} satisfies Prisma.ListingWhereInput
 
   const listings = await db.listing.findMany({
     where,

@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { db } from "@/lib/db"
-import { ListingCard } from "../../listings/listing-card"
+import { ListingCard } from "@/app/(public)/listings/listing-card"
 
 export default async function SavedPropertiesPage() {
   const session = await getServerSession(authOptions)

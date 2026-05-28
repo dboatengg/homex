@@ -6,6 +6,7 @@ import { signOut } from "next-auth/react"
 import { useState } from "react"
 import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import Image from "next/image"
 
 interface NavbarProps {
   session: any
@@ -24,8 +25,11 @@ export function Navbar({ session }: NavbarProps) {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="text-xl font-bold tracking-tight text-gray-900">
-          Home<span className="text-primary">X</span>
+        <Link href="/" className="flex items-center gap-3">
+          <Image src="/logo.png" width={32} height={32}  alt="HomeX"/>
+          {/* <span className="text-xl font-bold tracking-tight text-gray-900">
+            Home<span className="text-primary">X</span>
+          </span> */}
         </Link>
 
         {/* Desktop nav */}

@@ -48,7 +48,7 @@ export function HowItWorks() {
                 <div className="h-12 w-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
                   <step.icon className="h-5 w-5 text-primary" />
                 </div>
-                <span className="text-4xl font-bold text-border">
+                <span className="text-4xl font-bold text-primary tracking-tight">
                   {step.step}
                 </span>
               </div>

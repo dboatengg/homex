@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter, useSearchParams } from "next/navigation"
-import { useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 import {
   Select,
   SelectContent,
@@ -16,7 +16,10 @@ export function ListingsFilter() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  // Updates a single filter param while preserving others
+  const [city, setCity] = useState(searchParams.get("city") ?? "")
+  const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") ?? "")
+  const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") ?? "")
+
   const updateFilter = useCallback(
     (key: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString())
@@ -30,7 +33,32 @@ export function ListingsFilter() {
     [router, searchParams]
   )
 
+  // Debounce city and price inputs — waits 500ms after user stops typing
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      updateFilter("city", city)
+    }, 500)
+    return () => clearTimeout(timeout)
+  }, [city])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      updateFilter("minPrice", minPrice)
+    }, 500)
+    return () => clearTimeout(timeout)
+  }, [minPrice])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      updateFilter("maxPrice", maxPrice)
+    }, 500)
+    return () => clearTimeout(timeout)
+  }, [maxPrice])
+
   const clearFilters = () => {
+    setCity("")
+    setMinPrice("")
+    setMaxPrice("")
     router.push("/listings")
   }
 
@@ -93,12 +121,8 @@ export function ListingsFilter() {
       <Input
         placeholder="Search city..."
         className="w-40"
-        defaultValue={searchParams.get("city") ?? ""}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            updateFilter("city", (e.target as HTMLInputElement).value)
-          }
-        }}
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
       />
 
       {/* Min price */}
@@ -106,12 +130,8 @@ export function ListingsFilter() {
         placeholder="Min price"
         type="number"
         className="w-32"
-        defaultValue={searchParams.get("minPrice") ?? ""}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            updateFilter("minPrice", (e.target as HTMLInputElement).value)
-          }
-        }}
+        value={minPrice}
+        onChange={(e) => setMinPrice(e.target.value)}
       />
 
       {/* Max price */}
@@ -119,12 +139,8 @@ export function ListingsFilter() {
         placeholder="Max price"
         type="number"
         className="w-32"
-        defaultValue={searchParams.get("maxPrice") ?? ""}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            updateFilter("maxPrice", (e.target as HTMLInputElement).value)
-          }
-        }}
+        value={maxPrice}
+        onChange={(e) => setMaxPrice(e.target.value)}
       />
 
       {/* Clear filters */}

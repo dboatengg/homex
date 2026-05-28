@@ -5,7 +5,7 @@ import { db } from "@/lib/db"
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -21,8 +21,10 @@ export async function PATCH(
       return NextResponse.json({ message: "Invalid action" }, { status: 400 })
     }
 
+    const { id } = await params
+
     const application = await db.agentApplication.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!application) {
@@ -36,7 +38,7 @@ export async function PATCH(
       // Update both the application status and the user's role in one transaction
       await db.$transaction([
         db.agentApplication.update({
-          where: { id: params.id },
+          where: { id },
           data: { status: "APPROVED" },
         }),
         db.user.update({
@@ -46,7 +48,7 @@ export async function PATCH(
       ])
     } else {
       await db.agentApplication.update({
-        where: { id: params.id },
+        where: { id },
         data: { status: "REJECTED" },
       })
     }

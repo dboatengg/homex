@@ -1,4 +1,6 @@
 import Link from "next/link"
+import Image from "next/image"
+
 
 export function Footer() {
   return (
@@ -7,11 +9,11 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-3 md:col-span-2">
-            <p className="text-xl font-bold">
-              Home<span className="text-primary">X</span>
-            </p>
+            <Link href="/" className="flex items-center gap-5">
+              <Image src="/logo.png" width={70} height={70} alt="HomeX" />
+            </Link>
             <p className="text-sm text-muted-foreground max-w-xs">
-              Ghana's modern real estate platform. Find, list, and manage
+              Ghana&apos;s modern real estate platform. Find, list, and manage
               residential properties across the country.
             </p>
           </div>
@@ -60,9 +62,9 @@ export function Footer() {
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} HomeX. All rights reserved.
           </p>
-          <p className="text-xs text-muted-foreground">
+          {/* <p className="text-xs text-muted-foreground">
             Built in Ghana 🇬🇭
-          </p>
+          </p> */}
         </div>
       </div>
     </footer>

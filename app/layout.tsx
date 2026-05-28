@@ -17,9 +17,12 @@ const syne = Syne({
 })
 
 export const metadata: Metadata = {
-  title: "HomeX — Find Properties Across Ghana",
+  title: "HomeX - Find Properties Across Ghana",
   description:
     "Browse verified properties for rent and sale across Accra, Kumasi, Tema, and beyond.",
+  icons: {
+    icon: "/favicon.png",
+  },
 }
 
 export default function RootLayout({
@@ -29,6 +32,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+      </head>
       <body className={`${inter.variable} ${syne.variable}`}>
         <SessionProvider>{children}</SessionProvider>
       </body>

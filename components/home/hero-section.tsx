@@ -31,10 +31,10 @@ export function HeroSection() {
       <div className="absolute inset-0 bg-black/60" />
 
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
+      {/* <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" /> */}
 
       {/* Content */}
-      <div className="relative z-10 max-w-3xl mx-auto px-4 text-center space-y-8">
+      <div className="relative z-10 max-w-3xl mx-auto px-4 text-center space-y-5">
         {/* Badge */}
         <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white px-4 py-1.5 rounded-full text-sm font-medium">
           <MapPin className="h-3.5 w-3.5" />
@@ -49,8 +49,7 @@ export function HeroSection() {
         </h1>
 
         <p className="text-lg text-white/80 max-w-xl mx-auto">
-          Browse verified properties for rent and sale across Accra, Kumasi,
-          Tema, and beyond.
+          Browse properties for rent and sale in Accra, Kumasi, and beyond.
         </p>
 
         {/* Airbnb-style search bar — white floating card */}
@@ -77,7 +76,7 @@ export function HeroSection() {
             <Search className="h-4 w-4 text-gray-400 shrink-0" />
             <input
               type="text"
-              placeholder="Search by city — Accra, Kumasi, Tema..."
+              placeholder="Search by city - Accra, Kumasi, Tema..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
