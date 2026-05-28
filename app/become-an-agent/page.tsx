@@ -65,7 +65,7 @@ export default function BecomeAnAgentPage() {
           </div>
           <h1 className="text-2xl font-bold">Application submitted</h1>
           <p className="text-muted-foreground">
-            Your application to become an agent has been submitted. We'll review
+            Your application to become an agent has been submitted. We&apos;ll review
             it and get back to you shortly.
           </p>
           <Button onClick={() => router.push("/dashboard")} className="w-full">
