@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ListingCard } from "@/app/listings/listing-card"
+import { ListingCard } from "@/app/(public)/listings/listing-card"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 

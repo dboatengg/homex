@@ -4,7 +4,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -22,24 +21,24 @@ export function Navbar({ session }: NavbarProps) {
   ]
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="text-xl font-bold tracking-tight">
+        <Link href="/" className="text-xl font-bold tracking-tight text-gray-900">
           Home<span className="text-primary">X</span>
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                "text-sm transition-colors",
+                "text-sm font-medium transition-colors",
                 pathname === link.href
-                  ? "text-foreground font-medium"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "text-gray-900"
+                  : "text-gray-500 hover:text-gray-900"
               )}
             >
               {link.label}
@@ -48,35 +47,43 @@ export function Navbar({ session }: NavbarProps) {
         </div>
 
         {/* Desktop auth */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-2">
           {session ? (
             <>
-              <Button asChild variant="ghost" size="sm">
-                <Link href="/dashboard">Dashboard</Link>
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
+              <Link
+                href="/dashboard"
+                className="text-sm font-medium text-gray-700 hover:text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Dashboard
+              </Link>
+              <button
                 onClick={() => signOut({ callbackUrl: "/" })}
+                className="text-sm font-medium text-gray-700 hover:text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Sign out
-              </Button>
+              </button>
             </>
           ) : (
             <>
-              <Button asChild variant="ghost" size="sm">
-                <Link href="/signin">Sign in</Link>
-              </Button>
-              <Button asChild size="sm">
-                <Link href="/signup">Get started</Link>
-              </Button>
+              <Link
+                href="/signin"
+                className="text-sm font-medium text-gray-700 hover:text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/signup"
+                className="text-sm font-medium bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                Get started
+              </Link>
             </>
           )}
         </div>
 
         {/* Mobile toggle */}
         <button
-          className="md:hidden text-muted-foreground hover:text-foreground"
+          className="md:hidden text-gray-500 hover:text-gray-900"
           onClick={() => setMobileOpen(!mobileOpen)}
         >
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -85,40 +92,47 @@ export function Navbar({ session }: NavbarProps) {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-background px-4 py-4 space-y-3">
+        <div className="md:hidden border-t border-gray-100 bg-white px-6 py-4 space-y-3">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="block text-sm text-muted-foreground hover:text-foreground py-2"
+              className="block text-sm font-medium text-gray-700 hover:text-gray-900 py-2"
             >
               {link.label}
             </Link>
           ))}
-          <div className="pt-2 border-t border-border space-y-2">
+          <div className="pt-2 border-t border-gray-100 space-y-2">
             {session ? (
               <>
-                <Button asChild variant="outline" size="sm" className="w-full">
-                  <Link href="/dashboard">Dashboard</Link>
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="w-full"
+                <Link
+                  href="/dashboard"
+                  className="block text-sm font-medium text-center border border-gray-200 text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  className="w-full text-sm font-medium text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-50 transition-colors"
                   onClick={() => signOut({ callbackUrl: "/" })}
                 >
                   Sign out
-                </Button>
+                </button>
               </>
             ) : (
               <>
-                <Button asChild variant="outline" size="sm" className="w-full">
-                  <Link href="/signin">Sign in</Link>
-                </Button>
-                <Button asChild size="sm" className="w-full">
-                  <Link href="/signup">Get started</Link>
-                </Button>
+                <Link
+                  href="/signin"
+                  className="block text-sm font-medium text-center border border-gray-200 text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="block text-sm font-medium text-center bg-primary text-white px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  Get started
+                </Link>
               </>
             )}
           </div>
