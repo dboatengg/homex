@@ -15,10 +15,9 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
 
-  // Pages you've built — overrides NextAuth's default ones
   pages: {
-    signIn: "/auth/signin",
-    error: "/auth/signin",
+    signIn: "/signin",
+    error: "/signin",
   },
 
   providers: [
