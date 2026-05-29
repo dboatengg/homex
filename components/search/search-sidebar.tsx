@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useState, Suspense } from "react"
-import { SlidersHorizontal, ChevronDown, ChevronUp } from "lucide-react"
+import { SlidersHorizontal, ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const GHANA_REGIONS = [
@@ -27,38 +27,10 @@ interface SearchSidebarProps {
   }
 }
 
-function FilterSection({
-  title,
-  children,
-  defaultOpen = true,
-}: {
-  title: string
-  children: React.ReactNode
-  defaultOpen?: boolean
-}) {
-  const [open, setOpen] = useState(defaultOpen)
-
-  return (
-    <div className="border-b border-gray-100 py-5">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center justify-between w-full mb-3"
-      >
-        <p className="text-sm font-semibold text-gray-900">{title}</p>
-        {open ? (
-          <ChevronUp className="h-4 w-4 text-gray-400" />
-        ) : (
-          <ChevronDown className="h-4 w-4 text-gray-400" />
-        )}
-      </button>
-      {open && children}
-    </div>
-  )
-}
-
 function SearchSidebarInner({ filters }: SearchSidebarProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [collapsed, setCollapsed] = useState(false)
 
   const updateFilter = useCallback(
     (key: string, value: string) => {
@@ -77,110 +49,147 @@ function SearchSidebarInner({ filters }: SearchSidebarProps) {
   const hasFilters = searchParams.toString().length > 0
 
   return (
-    <div className="px-5 pt-5 pb-10">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <SlidersHorizontal className="h-4 w-4 text-gray-500" />
-          <span className="text-sm font-semibold text-gray-900">Filters</span>
-        </div>
-        {hasFilters && (
-          <button
-            onClick={clearAll}
-            className="text-xs font-medium text-amber-500 hover:text-amber-600 transition-colors underline underline-offset-2"
-          >
-            Clear all
-          </button>
+    <div className="relative flex">
+      {/* Sidebar panel */}
+      <div
+        className={cn(
+          "overflow-hidden transition-all duration-300 ease-in-out border-r border-gray-100 bg-white",
+          collapsed ? "w-0 opacity-0" : "w-72 opacity-100"
         )}
+      >
+        <div className="w-72 h-full overflow-y-auto">
+          <div className="p-5 space-y-4">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="h-4 w-4 text-gray-400" />
+                <span className="text-sm font-semibold text-gray-900">
+                  Filters
+                </span>
+              </div>
+              {hasFilters && (
+                <button
+                  onClick={clearAll}
+                  className="text-xs font-medium text-amber-500 hover:text-amber-600 transition-colors underline underline-offset-2"
+                >
+                  Clear all
+                </button>
+              )}
+            </div>
+
+            {/* Listing type */}
+            <div className="bg-gray-50 rounded-2xl p-4 space-y-3">
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                Listing type
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { value: "", label: "All" },
+                  { value: "RENT", label: "Rent" },
+                  { value: "SALE", label: "Buy" },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => updateFilter("type", opt.value)}
+                    className={cn(
+                      "py-2.5 rounded-xl text-sm font-semibold transition-all duration-150",
+                      (filters.type ?? "") === opt.value
+                        ? "bg-gray-900 text-white shadow-sm"
+                        : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300"
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Bedrooms */}
+            <div className="bg-gray-50 rounded-2xl p-4 space-y-3">
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                Bedrooms
+              </p>
+              <div className="flex gap-2">
+                {[
+                  { value: "", label: "Any" },
+                  { value: "1", label: "1" },
+                  { value: "2", label: "2" },
+                  { value: "3", label: "3" },
+                  { value: "4", label: "4+" },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => updateFilter("bedrooms", opt.value)}
+                    className={cn(
+                      "flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150",
+                      (filters.bedrooms ?? "") === opt.value
+                        ? "bg-amber-500 text-white shadow-sm"
+                        : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300"
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Region */}
+            <div className="bg-gray-50 rounded-2xl p-4 space-y-3">
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                Region
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => updateFilter("region", "")}
+                  className={cn(
+                    "col-span-2 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150",
+                    !filters.region
+                      ? "bg-gray-900 text-white shadow-sm"
+                      : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300"
+                  )}
+                >
+                  All regions
+                </button>
+                {GHANA_REGIONS.map((region) => (
+                  <button
+                    key={region}
+                    onClick={() => updateFilter("region", region)}
+                    className={cn(
+                      "py-2.5 px-2 rounded-xl text-xs font-semibold transition-all duration-150 truncate",
+                      filters.region === region
+                        ? "bg-gray-900 text-white shadow-sm"
+                        : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300"
+                    )}
+                  >
+                    {region}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Listing type */}
-      <FilterSection title="Listing type">
-        <div className="space-y-1">
-          {[
-            { value: "", label: "All" },
-            { value: "RENT", label: "For Rent" },
-            { value: "SALE", label: "For Sale" },
-          ].map((opt) => (
-            <button
-              key={opt.value}
-              onClick={() => updateFilter("type", opt.value)}
-              className={cn(
-                "w-full text-left px-3 py-2.5 rounded-xl text-sm transition-colors",
-                (filters.type ?? "") === opt.value
-                  ? "bg-gray-900 text-white font-medium"
-                  : "text-gray-600 hover:bg-gray-100"
-              )}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      </FilterSection>
-
-      {/* Bedrooms */}
-      <FilterSection title="Bedrooms">
-        <div className="flex flex-wrap gap-2">
-          {["any", "1", "2", "3", "4+"].map((opt) => (
-            <button
-              key={opt}
-              onClick={() =>
-                updateFilter(
-                  "bedrooms",
-                  opt === "any" ? "" : opt.replace("+", "")
-                )
-              }
-              className={cn(
-                "px-3 py-1.5 rounded-xl text-sm font-medium border transition-colors",
-                (filters.bedrooms ?? "any") === opt ||
-                  (!filters.bedrooms && opt === "any")
-                  ? "border-gray-900 bg-gray-900 text-white"
-                  : "border-gray-200 text-gray-600 hover:border-gray-400"
-              )}
-            >
-              {opt === "any" ? "Any" : `${opt} bed`}
-            </button>
-          ))}
-        </div>
-      </FilterSection>
-
-      {/* Region */}
-      <FilterSection title="Region" defaultOpen={false}>
-        <div className="space-y-1">
-          <button
-            onClick={() => updateFilter("region", "")}
-            className={cn(
-              "w-full text-left px-3 py-2.5 rounded-xl text-sm transition-colors",
-              !filters.region
-                ? "bg-gray-900 text-white font-medium"
-                : "text-gray-600 hover:bg-gray-100"
-            )}
-          >
-            All regions
-          </button>
-          {GHANA_REGIONS.map((region) => (
-            <button
-              key={region}
-              onClick={() => updateFilter("region", region)}
-              className={cn(
-                "w-full text-left px-3 py-2.5 rounded-xl text-sm transition-colors",
-                filters.region === region
-                  ? "bg-gray-900 text-white font-medium"
-                  : "text-gray-600 hover:bg-gray-100"
-              )}
-            >
-              {region}
-            </button>
-          ))}
-        </div>
-      </FilterSection>
+      {/* Collapse toggle button */}
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className={cn(
+          "absolute top-6 -right-3.5 z-10 h-7 w-7 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center hover:shadow-md transition-all duration-200",
+        )}
+      >
+        {collapsed ? (
+          <ChevronRight className="h-3.5 w-3.5 text-gray-600" />
+        ) : (
+          <ChevronLeft className="h-3.5 w-3.5 text-gray-600" />
+        )}
+      </button>
     </div>
   )
 }
 
 export function SearchSidebar({ filters }: SearchSidebarProps) {
   return (
-    <Suspense fallback={<div />}>
+    <Suspense fallback={<div className="w-72 border-r border-gray-100" />}>
       <SearchSidebarInner filters={filters} />
     </Suspense>
   )

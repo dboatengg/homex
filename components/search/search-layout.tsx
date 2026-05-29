@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { SearchNavbar } from "@/components/search/search-navbar"
 import { SearchSidebar } from "@/components/search/search-sidebar"
 import { SearchGrid } from "@/components/search/search-grid"
@@ -22,8 +21,6 @@ interface SearchLayoutProps {
 }
 
 export function SearchLayout({ listings, session, filters }: SearchLayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Navbar */}
@@ -35,14 +32,12 @@ export function SearchLayout({ listings, session, filters }: SearchLayoutProps) 
       </div>
 
       {/* Main content */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
         {/* Sidebar */}
-        <aside className="hidden lg:flex w-72 shrink-0 border-r border-gray-100 flex-col overflow-y-auto">
-          <SearchSidebar filters={filters} />
-        </aside>
+        <SearchSidebar filters={filters} />
 
         {/* Right panel */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden min-w-0">
           {/* Category pills */}
           <div className="border-b border-gray-100 px-6 py-3">
             <CategoryPills active={filters.category} />
